@@ -1,0 +1,26 @@
+{
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "item",
+          "name": "minecraft:written_book",
+          "functions": [
+            {
+              "function": "set_book_contents",
+              "author": "FrankyRayMS",
+              "title": "Formatting Codes Book",
+              "pages": [
+                "Formatting Colors\n\n[0] §0Minecraft: BE§r\n[1] §1Minecraft: BE§r\n[2] §2Minecraft: BE§r\n[3] §3Minecraft: BE§r\n[4] §4Minecraft: BE§r\n[5] §5Minecraft: BE§r\n[6] §6Minecraft: BE§r\n[7] §7Minecraft: BE§r\n[8] §8Minecraft: BE§r\n[9] §9Minecraft: BE§r",
+                "[a] §aMinecraft: BE§r\n[b] §bMinecraft: BE§r\n[c] §cMinecraft: BE§r\n[d] §dMinecraft: BE§r\n[e] §eMinecraft: BE§r\n[f] §fMinecraft: BE§r\n[g] §gMinecraft: BE§r\n[h] §hMinecraft: BE§r\n[i] §iMinecraft: BE§r",
+                "[j] §jMinecraft: BE§r\n[k] §kMinecraft: BE§r\n[l] §lMinecraft: BE§r\n[m] §mMinecraft: BE§r\n[n] §nMinecraft: BE§r\n[o] §oMinecraft: BE§r\n[p] §pMinecraft: BE§r\n[q] §qMinecraft: BE§r\n[r] §rMinecraft: BE§r",
+                "[s] §sMinecraft: BE§r\n[t] §tMinecraft: BE§r\n[u] §uMinecraft: BE§r\n[v] §vMinecraft: BE§r\n[w] §wMinecraft: BE§r\n[x] §xMinecraft: BE§r\n[y] §yMinecraft: BE§r\n[z] §zMinecraft: BE§r"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

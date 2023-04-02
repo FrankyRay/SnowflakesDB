@@ -18,7 +18,7 @@
       "description": "Script/Gametest Module",
       "type": "script",
       "language": "javascript",
-      "entry": "scripts/Index.js",
+      "entry": "scripts/main.js",
       "uuid": "499b51b5-5c5f-40c5-85ab-4a92a98e9ad8",
       "version": [1, 0, 0]
     }

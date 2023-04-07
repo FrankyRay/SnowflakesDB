@@ -1,19 +1,30 @@
 import { world, system, Player } from "@minecraft/server";
-import { ActionFormData } from "@minecraft/server-ui";
+import { ActionFormData, MessageFormData } from "@minecraft/server-ui";
 import shapeGeneratorMenu from "./shape-generator/main";
+import survivalEnhancer from "./survival-enhancer/main";
+import entityComponent from "./entity";
+import deepCopy from "./lib/deepCopy";
 
 const options = [
-  {
-    name: "Ping",
-    icon: "",
-    func: (player) => {
-      console.warn(player.name);
-    },
-  },
   {
     name: "Shape Generator",
     icon: "",
     func: shapeGeneratorMenu,
+  },
+  {
+    name: "Survival Enhancer",
+    icon: "",
+    func: survivalEnhancer,
+  },
+  {
+    name: "Block Component [DeepCopy][Test]",
+    icon: "",
+    func: blockComponent,
+  },
+  {
+    name: "Entity Component [Test]",
+    icon: "",
+    func: entityComponent,
   },
 ];
 
@@ -38,9 +49,46 @@ function mainForm(player) {
     form.button(opt.name, opt.icon);
   }
 
-  form.show(player).then((response) => {
-    if (response.canceled) return;
+  form
+    .show(player)
+    .then((response) => {
+      if (response.canceled) return;
 
-    options[response.selection].func(player);
-  });
+      options[response.selection].func(player);
+    })
+    .catch((err) => player.sendMessage(err, err.stack));
+}
+
+/**
+ * @param {Player} player
+ */
+function blockComponent(player) {
+  const blockComponentList = [
+    "minecraft:inventory",
+    "minecraft:lavaContainer",
+    "minecraft:piston",
+    "minecraft:potionContainer",
+    "minecraft:recordPlayer",
+    "minecraft:sign",
+    "minecraft:snowContainer",
+    "minecraft:waterContainer",
+  ];
+  const block = player.getBlockFromViewDirection({ maxDistance: 20 });
+  const deepObject = deepCopy(block);
+
+  for (const compId of blockComponentList) {
+    const comp = entity.getComponent(compId);
+    if (!comp) {
+      deepObject[compId] = false;
+    } else {
+      deepObject[compId] = deepCopy(comp);
+    }
+  }
+
+  new MessageFormData()
+    .title("Block Component")
+    .body(JSON.stringify(deepObject, null, 2))
+    .button1("OK")
+    .button2("Cancel")
+    .show(player);
 }

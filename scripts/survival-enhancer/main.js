@@ -6,9 +6,16 @@ import {
 } from "@minecraft/server-ui";
 // Features
 import replantingCrops from "./replantingCrops";
-import spawnLocationInfo from "./spawnLocationInfo";
+import spawnLocationInfo from "./players/spawnLocationInfo";
+import elytraWarning from "./players/elytraWarning";
+import mooshroomInfo from "./entities/mooshroomInfo";
+import parrotCookieWarning from "./entities/parrotCookieWarning";
 
-const options = { Misc: [replantingCrops, spawnLocationInfo] };
+const options = {
+  Player: [spawnLocationInfo, elytraWarning],
+  Entity: [mooshroomInfo, parrotCookieWarning],
+  Misc: [replantingCrops],
+};
 
 /**
  * Use to sync the data from scoreboard to "optionList" object
@@ -57,7 +64,9 @@ function survivalEnhancerSubmenu(player, submenu) {
 
   for (const data of options[submenu]) {
     submenuForm.toggle(
-      `${data.name} ${data.beta ? "§g[BETA]§r" : ""}\n§8[§cFalse§8/§aTrue§8]`,
+      `${data.name} ${data.beta ? "§g[BETA]" : ""}${
+        data.desc ? "\n§7" + data.desc : ""
+      }\n§8[§cOff§8/§aOn§8]`,
       data.activate
     );
   }
@@ -84,8 +93,8 @@ function survivalEnhancerSubmenu(player, submenu) {
 export default function survivalEnhancer(player) {
   const menuForm = new ActionFormData()
     .title("Survival Enhancer")
-    .body("Select submenu to see another options")
-    .button("Information display");
+    .body("Select submenu to see another options");
+  // .button("Information display");
 
   for (const sub of Object.keys(options)) {
     menuForm.button(sub);
@@ -94,47 +103,47 @@ export default function survivalEnhancer(player) {
   menuForm.show(player).then((result) => {
     if (result.canceled) return;
 
-    if (result.selection === 0) return survivalEnhancerDisplay(player);
-    survivalEnhancerSubmenu(player, Object.keys(options)[result.selection - 1]);
+    // if (result.selection === 0) return survivalEnhancerDisplay(player);
+    survivalEnhancerSubmenu(player, Object.keys(options)[result.selection]);
   });
 }
 
-/**
- * Survival Enhancer Form Display
- *
- * @param {Player} player
- * Player
- */
-function survivalEnhancerDisplay(player) {
-  const displayClass = [];
-  for (const features of Object.values(options)) {
-    for (const feature of features) {
-      if (feature.display) displayClass.push(feature);
-    }
-  }
+// /**
+//  * Survival Enhancer Form Display
+//  *
+//  * @param {Player} player
+//  * Player
+//  */
+// function survivalEnhancerDisplay(player) {
+//   const displayClass = [];
+//   for (const features of Object.values(options)) {
+//     for (const feature of features) {
+//       if (feature.display) displayClass.push(feature);
+//     }
+//   }
 
-  const displayForm = new ActionFormData()
-    .title("Survival Enhancer Display")
-    .body("Select one to show information")
-    .button("Remove display");
+//   const displayForm = new ActionFormData()
+//     .title("Survival Enhancer Display")
+//     .body("Select one to show information")
+//     .button("Remove display");
 
-  for (const feature of displayClass) {
-    let title = feature.name;
-    if (
-      player.getTags().find((tag) => tag.startsWith("se/show/")) === feature.id
-    )
-      title += "\n§g[Active]";
+//   for (const feature of displayClass) {
+//     let title = feature.name;
+//     if (
+//       player.getTags().find((tag) => tag.startsWith("se/show/")) === feature.id
+//     )
+//       title += "\n§g[Active]";
 
-    displayForm.button(title);
-  }
+//     displayForm.button(title);
+//   }
 
-  displayForm.show(player).then((result) => {
-    if (result.canceled) return;
+//   displayForm.show(player).then((result) => {
+//     if (result.canceled) return;
 
-    if (result.selection === 0) {
-      const tag = player.getTags().find((tag) => tag.startsWith("se/show/"));
-      console.log(tag);
-      player.removeTag(tag);
-    } else player.addTag(`se/show/${displayClass[result.selection - 1].id}`);
-  });
-}
+//     if (result.selection === 0) {
+//       const tag = player.getTags().find((tag) => tag.startsWith("se/show/"));
+//       console.log(tag);
+//       player.removeTag(tag);
+//     } else player.addTag(`se/show/${displayClass[result.selection - 1].id}`);
+//   });
+// }

@@ -3,9 +3,9 @@ import { world, system, ItemStack } from "@minecraft/server";
 class SpawnLocationInfo {
   id = "spawn_location";
   name = "Spawn Location";
+  desc = "Show the location of world/player spawn point";
   beta = true;
   activate = false;
-  display = true;
 
   constructor() {
     system.runInterval(() => {
@@ -19,7 +19,7 @@ class SpawnLocationInfo {
         const item = player
           .getComponent("inventory")
           .container.getItem(player.selectedSlot);
-        if (item.typeId !== "minecraft:compass") return;
+        if (item?.typeId !== "minecraft:compass") continue;
 
         let message = `[SE] ${this.name}`;
 

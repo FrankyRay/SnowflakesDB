@@ -3,9 +3,9 @@ import { Container, system, world } from "@minecraft/server";
 class ReplantingCrops {
   id = "replanting_crops";
   name = "Replanting Crops";
+  desc = "Replanting crops when corresponding seeds is available";
   beta = true;
   activate = false;
-  display = false;
 
   // <blockId>: <itemId>
   #plant = {

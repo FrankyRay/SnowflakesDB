@@ -1,4 +1,4 @@
-import { world, system, Player } from "@minecraft/server";
+import { world, system, Player, MinecraftEffectTypes } from "@minecraft/server";
 import { ActionFormData, MessageFormData } from "@minecraft/server-ui";
 import shapeGeneratorMenu from "./shape-generator/main";
 import survivalEnhancer from "./survival-enhancer/main";
@@ -25,6 +25,11 @@ const options = [
     name: "Entity Component [Test]",
     icon: "",
     func: entityComponent,
+  },
+  {
+    name: "Test Button",
+    icon: "",
+    func: testing,
   },
 ];
 
@@ -91,4 +96,11 @@ function blockComponent(player) {
     .button1("OK")
     .button2("Cancel")
     .show(player);
+}
+
+/**
+ * @param {Player} player
+ */
+function testing(player) {
+  player.addEffect(MinecraftEffectTypes.speed, 0, 255, true);
 }

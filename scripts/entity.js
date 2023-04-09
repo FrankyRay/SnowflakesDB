@@ -95,7 +95,7 @@ function fetching(entity) {
   } \n`;
   indent++;
   // console.log(Object.keys(deepCode(entity)));
-  for (const property of Object.keys(deepCode(entity))) {
+  for (const property of Object.keys(entity)) {
     const type = typeof entity[property];
 
     switch (type) {

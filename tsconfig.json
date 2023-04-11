@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        // Specify what type of code is generated.
+        "module": "ES2020",
+        "target": "ES2021",
+        "moduleResolution": "Node",
+        "allowSyntheticDefaultImports": true,
+        // Specify the folder entry for your TS files
+        "baseUrl": "./src",
+        "rootDir": "./src",
+        // Specify the folder output for generated JS files.
+        "outDir": "./scripts"
+    },
+    "exclude": ["node_modules"],
+    "include": ["src"]
+}

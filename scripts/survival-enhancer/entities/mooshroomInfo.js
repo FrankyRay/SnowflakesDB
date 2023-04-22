@@ -1,18 +1,14 @@
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _MooshroomInfo_markVariants;
 import { world, system, } from "@minecraft/server";
 class MooshroomInfo {
     constructor() {
         this.id = "mooshroom_info";
         this.name = "Mooshroom Info";
         this.desc = "Show mooshroom variant and mark variant";
-        this.beta = true;
+        this.beta = false;
+        this.group = "Entity";
+        this.version = [1, 0, 0];
         this.activate = false;
-        _MooshroomInfo_markVariants.set(this, [
+        this.markVariants = [
             { id: "Poppy", effect: "Night Vision", duration: 4 },
             { id: "Cornflower", effect: "Jump Boost", duration: 4 },
             { id: "Tulips", effect: "Weakness", duration: 7 },
@@ -24,7 +20,7 @@ class MooshroomInfo {
             { id: "Oxeye Daisy", effect: "Regeneration", duration: 6 },
             { id: "Wither Rose", effect: "Wither", duration: 6 },
             { id: "Torchflower", effect: "Night Vision", duration: 4 },
-        ]);
+        ];
         system.runInterval(() => {
             if (!this.activate)
                 return;
@@ -41,7 +37,7 @@ class MooshroomInfo {
                 const variant = entity.getComponent("variant").value;
                 message += `\n§a${variant ? "Brown" : "Red"} Mooshroom [V:${variant}] `;
                 const markVariant = entity.getComponent("mark_variant").value;
-                const mvData = __classPrivateFieldGet(this, _MooshroomInfo_markVariants, "f")[markVariant];
+                const mvData = this.markVariants[markVariant];
                 message += `§r| §c[MV:${markVariant}] ${!mvData
                     ? "NONE"
                     : `${mvData.duration}s ${mvData.effect} (${mvData.id})`}`;
@@ -66,5 +62,4 @@ class MooshroomInfo {
         });
     }
 }
-_MooshroomInfo_markVariants = new WeakMap();
 export default new MooshroomInfo();

@@ -5,6 +5,8 @@ class ElytraWarning {
         this.name = "Elytra Warning";
         this.desc = "Show durability while using elytra";
         this.beta = true;
+        this.group = "Player";
+        this.version = [1, 0, 0];
         this.activate = false;
         system.runInterval(() => {
             if (!this.activate)

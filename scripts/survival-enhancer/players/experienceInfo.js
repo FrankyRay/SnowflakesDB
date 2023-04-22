@@ -1,26 +1,29 @@
-import { world, system, } from "@minecraft/server";
-class ParrotCookieWarning {
+import { world, system, MinecraftBlockTypes } from "@minecraft/server";
+class ExperienceInfo {
     constructor() {
-        this.id = "parrot_cookie_warning";
-        this.name = "Parrot Cookie Warning";
-        this.desc = "Show notification to player when trying to give parrot a cookie";
-        this.beta = false;
-        this.group = "Entity";
+        this.id = "experience_info";
+        this.name = "Experience Info";
+        this.desc = "Show the amount of experience you have";
+        this.beta = true;
+        this.group = "Player";
         this.version = [1, 0, 0];
         this.activate = false;
         system.runInterval(() => {
             if (!this.activate)
                 return;
             for (const player of world.getPlayers()) {
-                const item = player.getComponent("inventory").container.getItem(player.selectedSlot);
-                if (item?.typeId !== "minecraft:cookie")
-                    return;
-                const entity = player.getEntitiesFromViewDirection({
+                // if (!player.hasTag(`se/show/${this.id}`)) return;
+                const block = player.getBlockFromViewDirection({
                     maxDistance: 5,
-                })[0];
-                if (entity?.typeId !== "minecraft:parrot")
-                    return;
-                let message = `[SE] ${this.name}\n§4[WARNING] §cDon't give cookie to parrot, you monster!`;
+                });
+                if (block?.type !== MinecraftBlockTypes.anvil)
+                    continue;
+                let message = `[SE] ${this.name}`;
+                const currentXp = player.xpEarnedAtCurrentLevel;
+                const requiredXp = player.totalXpNeededForNextLevel;
+                const totalXp = player.getTotalXp();
+                const totalLevel = player.addLevels(0);
+                message += `\nLevel: ${totalLevel} | Experience: ${totalXp} [ ${currentXp} / ${requiredXp} ]`;
                 player.onScreenDisplay.setActionBar(message);
             }
         });
@@ -42,4 +45,4 @@ class ParrotCookieWarning {
         });
     }
 }
-export default new ParrotCookieWarning();
+export default new ExperienceInfo();

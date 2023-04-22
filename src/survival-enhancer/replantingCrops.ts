@@ -18,6 +18,8 @@ class ReplantingCrops {
   public readonly desc: string =
     "Replanting crops when corresponding seeds is available";
   public readonly beta: boolean = true;
+  public readonly group: string = "Misc";
+  public readonly version: number[] = [1, 1, 0];
   public activate: boolean = false;
 
   private plant: object = {
@@ -31,6 +33,7 @@ class ReplantingCrops {
     "minecraft:nether_wart": "minecraft:nether_wart",
     // Next Update [1.20]
     "minecraft:torchflower": "minecraft:torchflower_seeds",
+    "minecraft:pitcher_crop": "minecraft:pitcher_pod",
   };
 
   constructor() {

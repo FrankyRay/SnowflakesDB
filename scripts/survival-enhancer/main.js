@@ -1,3 +1,4 @@
+import { world } from "@minecraft/server";
 import { ActionFormData, ModalFormData, } from "@minecraft/server-ui";
 // Features
 import replantingCrops from "./replantingCrops";
@@ -5,35 +6,50 @@ import mooshroomInfo from "./entities/mooshroomInfo";
 import parrotCookieWarn from "./entities/parrotCookieWarning";
 import elytraWarning from "./players/elytraWarning";
 import spawnLocation from "./players/spawnLocationInfo";
-const options = {
-    Entity: [mooshroomInfo, parrotCookieWarn],
-    Player: [elytraWarning, spawnLocation],
-    Misc: [replantingCrops],
-};
-export default function survivalEnhancer(player) {
-    const seForm = new ActionFormData()
-        .title("Survival Enhancer")
-        .body("Select submenu to see other options");
-    for (const sub of Object.keys(options)) {
-        seForm.button(sub);
+import catVariantInfo from "./entities/catVariantInfo";
+import timeDayInfo from "./players/timeDayInfo";
+import experienceInfo from "./players/experienceInfo";
+const features = [
+    catVariantInfo,
+    mooshroomInfo,
+    parrotCookieWarn,
+    elytraWarning,
+    spawnLocation,
+    timeDayInfo,
+    experienceInfo,
+    replantingCrops,
+    /* cropAgeInfo */
+];
+world.events.itemUse.subscribe((evd) => {
+    const player = evd.source;
+    const item = evd.itemStack;
+    if (!item.getLore().find((lore) => lore === "§r§e[Form] Survival Enhancer"))
+        return;
+    if (player.isSneaking)
+        survivalEnhancerPlayer(player);
+    else
+        survivalEnhancer(player);
+});
+function survivalEnhancer(player) {
+    const mainForm = new ModalFormData().title(`Survival Enhancer [Global]`);
+    for (const feature of features) {
+        mainForm.toggle(`${feature.name} §a[${feature.group}]${feature.beta ? "§g[BETA]" : ""}\n§8Version ${feature.version.join(".")}\n§7${feature.desc}\n§8[§cOff§8/§aOn§8]`, feature.activate);
     }
-    seForm.show(player).then((response) => {
-        if (response.canceled)
-            return;
-        survivalEnhancerSubmenu(player, Object.keys(options)[response.selection]);
-    });
-}
-function survivalEnhancerSubmenu(player, submenu) {
-    const subForm = new ModalFormData().title(`Survival Enhancer: ${submenu}`);
-    for (const data of options[submenu]) {
-        subForm.toggle(`${data.name} ${data.beta ? "§g[BETA]" : ""}${data.desc ? "\n§7" + data.desc : ""}\n§8[§cOff§8/§aOn§8]`, data.activate);
-    }
-    subForm.show(player).then((result) => {
+    mainForm.show(player).then((result) => {
         if (result.canceled)
             return;
-        options[submenu].forEach((data, i) => {
+        features.forEach((data, i) => {
             const value = result.formValues[i];
             player.runCommand(`scoreboard players set ${data.id} survival_plus ${Number(value)}`);
         });
     });
+}
+function survivalEnhancerPlayer(player) {
+    const userForm = new ActionFormData()
+        .title("Survival Enhancer [User]")
+        .body("Select the option to customize the features");
+    for (const feature of features) {
+        userForm.button(`${feature.name} ${feature.activate ? "§a[ON]" : "§c[OFF]"}\n${feature.desc}`);
+    }
+    userForm.show(player).then();
 }

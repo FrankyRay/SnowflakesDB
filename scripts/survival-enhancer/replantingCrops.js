@@ -5,6 +5,8 @@ class ReplantingCrops {
         this.name = "Replanting Crops";
         this.desc = "Replanting crops when corresponding seeds is available";
         this.beta = true;
+        this.group = "Misc";
+        this.version = [1, 1, 0];
         this.activate = false;
         this.plant = {
             "minecraft:wheat": "minecraft:wheat_seeds",
@@ -17,6 +19,7 @@ class ReplantingCrops {
             "minecraft:nether_wart": "minecraft:nether_wart",
             // Next Update [1.20]
             "minecraft:torchflower": "minecraft:torchflower_seeds",
+            "minecraft:pitcher_crop": "minecraft:pitcher_pod",
         };
         world.events.blockBreak.subscribe((evd) => {
             if (!this.activate)

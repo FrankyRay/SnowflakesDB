@@ -1,10 +1,10 @@
 {
   "dependencies": {
-    "@minecraft/server": "^1.2.0-beta.1.19.80-preview.23",
+    "@minecraft/server": "^1.2.0-beta.1.20.0-preview.20",
     "@minecraft/server-admin": "^1.0.0-beta.1.19.80-preview.24",
     "@minecraft/server-gametest": "^1.0.0-beta.1.19.80-preview.23",
     "@minecraft/server-net": "^1.0.0-beta.1.19.80-preview.24",
-    "@minecraft/server-ui": "^1.0.0-beta.1.19.80-preview.23"
+    "@minecraft/server-ui": "^1.0.0-beta.1.20.0-preview.20"
   },
   "name": "snowflakesdb",
   "description": "",
@@ -13,7 +13,6 @@
   "directories": {
     "test": "test"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

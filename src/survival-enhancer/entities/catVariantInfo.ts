@@ -1,41 +1,53 @@
 import {
   world,
   system,
-  ItemStack,
-  EntityInventoryComponent,
+  Entity,
+  EntityVariantComponent,
 } from "@minecraft/server";
 
-class ParrotCookieWarning {
-  public readonly id: string = "parrot_cookie_warning";
-  public readonly name: string = "Parrot Cookie Warning";
-  public readonly desc: string =
-    "Show notification to player when trying to give parrot a cookie";
-  public readonly beta: boolean = false;
+class CatVariantInfo {
+  public readonly id: string = "cat_variant_inf";
+  public readonly name: string = "Cat Variant Info";
+  public readonly desc: string = "Show the variant of cat";
+  public readonly beta: boolean = true;
   public readonly group: string = "Entity";
   public readonly version: number[] = [1, 0, 0];
   public activate: boolean = false;
+
+  private variants = [
+    "White",
+    "Tuxedo",
+    "Red",
+    "Siamese",
+    "British",
+    "Calico",
+    "Persian",
+    "Ragdoll",
+    "Tabby",
+    "Black",
+    "Jellie",
+  ];
 
   constructor() {
     system.runInterval(() => {
       if (!this.activate) return;
 
       for (const player of world.getPlayers()) {
-        const item: ItemStack = (
-          player.getComponent("inventory") as EntityInventoryComponent
-        ).container.getItem(player.selectedSlot);
-        if (item?.typeId !== "minecraft:cookie") return;
-
-        const entity = player.getEntitiesFromViewDirection({
+        const entity: Entity = player.getEntitiesFromViewDirection({
           maxDistance: 5,
         })[0];
-        if (entity?.typeId !== "minecraft:parrot") return;
-        let message = `[SE] ${this.name}\n§4[WARNING] §cDon't give cookie to parrot, you monster!`;
+        if (entity?.typeId !== "minecraft:cat") continue;
+        let message = `[SE] ${this.name}`;
+
+        const variant = (
+          entity.getComponent("variant") as EntityVariantComponent
+        ).value;
+        message += `\n§a[${variant}/10] §c${this.variants[variant]} Cat`;
 
         player.onScreenDisplay.setActionBar(message);
       }
     });
 
-    // Refreshing "activate" based on scoreboard
     this.refreshingData();
   }
 
@@ -58,4 +70,4 @@ class ParrotCookieWarning {
   }
 }
 
-export default new ParrotCookieWarning();
+export default new CatVariantInfo();

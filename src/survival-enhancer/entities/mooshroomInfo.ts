@@ -12,10 +12,12 @@ class MooshroomInfo {
   public readonly id: string = "mooshroom_info";
   public readonly name: string = "Mooshroom Info";
   public readonly desc: string = "Show mooshroom variant and mark variant";
-  public readonly beta: boolean = true;
+  public readonly beta: boolean = false;
+  public readonly group: string = "Entity";
+  public readonly version: number[] = [1, 0, 0];
   public activate: boolean = false;
 
-  #markVariants = [
+  private markVariants = [
     { id: "Poppy", effect: "Night Vision", duration: 4 },
     { id: "Cornflower", effect: "Jump Boost", duration: 4 },
     { id: "Tulips", effect: "Weakness", duration: 7 },
@@ -53,7 +55,7 @@ class MooshroomInfo {
         const markVariant = (
           entity.getComponent("mark_variant") as EntityMarkVariantComponent
         ).value;
-        const mvData = this.#markVariants[markVariant];
+        const mvData = this.markVariants[markVariant];
         message += `§r| §c[MV:${markVariant}] ${
           !mvData
             ? "NONE"

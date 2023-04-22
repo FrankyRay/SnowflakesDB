@@ -1,30 +1,41 @@
 import { world, system, } from "@minecraft/server";
-class ParrotCookieWarning {
+class CatVariantInfo {
     constructor() {
-        this.id = "parrot_cookie_warning";
-        this.name = "Parrot Cookie Warning";
-        this.desc = "Show notification to player when trying to give parrot a cookie";
-        this.beta = false;
+        this.id = "cat_variant_inf";
+        this.name = "Cat Variant Info";
+        this.desc = "Show the variant of cat";
+        this.beta = true;
         this.group = "Entity";
         this.version = [1, 0, 0];
         this.activate = false;
+        this.variants = [
+            "White",
+            "Tuxedo",
+            "Red",
+            "Siamese",
+            "British",
+            "Calico",
+            "Persian",
+            "Ragdoll",
+            "Tabby",
+            "Black",
+            "Jellie",
+        ];
         system.runInterval(() => {
             if (!this.activate)
                 return;
             for (const player of world.getPlayers()) {
-                const item = player.getComponent("inventory").container.getItem(player.selectedSlot);
-                if (item?.typeId !== "minecraft:cookie")
-                    return;
                 const entity = player.getEntitiesFromViewDirection({
                     maxDistance: 5,
                 })[0];
-                if (entity?.typeId !== "minecraft:parrot")
-                    return;
-                let message = `[SE] ${this.name}\n§4[WARNING] §cDon't give cookie to parrot, you monster!`;
+                if (entity?.typeId !== "minecraft:cat")
+                    continue;
+                let message = `[SE] ${this.name}`;
+                const variant = entity.getComponent("variant").value;
+                message += `\n§a[${variant}/10] §c${this.variants[variant]} Cat`;
                 player.onScreenDisplay.setActionBar(message);
             }
         });
-        // Refreshing "activate" based on scoreboard
         this.refreshingData();
     }
     refreshingData() {
@@ -42,4 +53,4 @@ class ParrotCookieWarning {
         });
     }
 }
-export default new ParrotCookieWarning();
+export default new CatVariantInfo();

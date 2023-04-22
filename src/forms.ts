@@ -4,10 +4,13 @@ import {
   Player,
   MinecraftEffectTypes,
   Block,
+  EntityInventoryComponent,
+  ItemStack,
+  MinecraftItemTypes,
 } from "@minecraft/server";
 import { ActionFormData, MessageFormData } from "@minecraft/server-ui";
 import deepCopy from "lib/deepCopy";
-import survivalEnhancer from "survival-enhancer/main";
+import "survival-enhancer/main";
 
 interface Options {
   name: string;
@@ -22,9 +25,9 @@ const options: Options[] = [
   //   func: shapeGeneratorMenu,
   // },
   {
-    name: "Survival Enhancer",
+    name: "Survival Enhancer Book",
     icon: "",
-    func: survivalEnhancer,
+    func: survivalEnhancerBook,
   },
   {
     name: "Block Component [DeepCopy/Test]",
@@ -43,11 +46,15 @@ const options: Options[] = [
   },
 ];
 
-world.events.beforeItemUse.subscribe((event) => {
-  if (event.item.typeId !== "minecraft:book") return;
+world.events.itemUse.subscribe((event) => {
+  if (
+    event.itemStack.typeId !== "minecraft:book" ||
+    event.itemStack.getLore().length !== 0
+  )
+    return;
 
   // @ts-ignore
-  const player: Player = event.source;
+  const player = event.source as Player;
   mainForm(player);
 });
 
@@ -70,9 +77,6 @@ function mainForm(player: Player): void {
     .catch((err) => console.error(err, err.stack));
 }
 
-/**
- * @param {Player} player
- */
 function blockComponent(player: Player): void {
   const blockComponentList = [
     "minecraft:inventory",
@@ -106,4 +110,14 @@ function blockComponent(player: Player): void {
 
 function testing(player: Player): void {
   player.addEffect(MinecraftEffectTypes.speed, 0, 255, true);
+}
+
+function survivalEnhancerBook(player: Player): void {
+  const inv = player.getComponent("inventory") as EntityInventoryComponent;
+
+  const item = new ItemStack(MinecraftItemTypes.book, 1);
+  item.nameTag = "§rSurvival Enhancer Options";
+  item.setLore(["§r§e[Form] Survival Enhancer"]);
+
+  inv.container.addItem(item);
 }

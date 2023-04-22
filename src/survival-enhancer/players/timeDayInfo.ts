@@ -1,17 +1,11 @@
-import {
-  world,
-  system,
-  ItemStack,
-  EntityInventoryComponent,
-} from "@minecraft/server";
+import { world, system, EntityInventoryComponent } from "@minecraft/server";
 
-class ParrotCookieWarning {
-  public readonly id: string = "parrot_cookie_warning";
-  public readonly name: string = "Parrot Cookie Warning";
-  public readonly desc: string =
-    "Show notification to player when trying to give parrot a cookie";
-  public readonly beta: boolean = false;
-  public readonly group: string = "Entity";
+class TimeDayInfo {
+  public readonly id: string = "time_day_info";
+  public readonly name: string = "Time Day Info";
+  public readonly desc: string = "Show the time value";
+  public readonly beta: boolean = true;
+  public readonly group: string = "Player";
   public readonly version: number[] = [1, 0, 0];
   public activate: boolean = false;
 
@@ -20,16 +14,17 @@ class ParrotCookieWarning {
       if (!this.activate) return;
 
       for (const player of world.getPlayers()) {
-        const item: ItemStack = (
+        const item = (
           player.getComponent("inventory") as EntityInventoryComponent
         ).container.getItem(player.selectedSlot);
-        if (item?.typeId !== "minecraft:cookie") return;
+        if (item?.typeId !== "minecraft:clock") continue;
+        let message = `[SE] ${this.name}`;
 
-        const entity = player.getEntitiesFromViewDirection({
-          maxDistance: 5,
-        })[0];
-        if (entity?.typeId !== "minecraft:parrot") return;
-        let message = `[SE] ${this.name}\n§4[WARNING] §cDon't give cookie to parrot, you monster!`;
+        const worldTime = world.getTime();
+        const absoluteTime = world.getAbsoluteTime();
+        message += `\n§aWorld: ${this.numberToTime(
+          worldTime
+        )} §r| §cAbsolute: ${this.numberToTime(absoluteTime)}`;
 
         player.onScreenDisplay.setActionBar(message);
       }
@@ -37,6 +32,15 @@ class ParrotCookieWarning {
 
     // Refreshing "activate" based on scoreboard
     this.refreshingData();
+  }
+
+  private numberToTime(time: number): string {
+    let hour = Math.floor(time / 1000) + 6;
+    if (time > 18000) hour -= 18;
+
+    return `${hour <= 10 ? "0" + hour : hour}${
+      Math.floor(time / 20) % 2 ? ":" : "."
+    }00 ${hour >= 12 ? "PM" : "AM"}`;
   }
 
   private refreshingData() {
@@ -58,4 +62,4 @@ class ParrotCookieWarning {
   }
 }
 
-export default new ParrotCookieWarning();
+export default new TimeDayInfo();

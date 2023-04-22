@@ -12,6 +12,8 @@ class ElytraWarning {
   public readonly name: string = "Elytra Warning";
   public readonly desc: string = "Show durability while using elytra";
   public readonly beta: boolean = true;
+  public readonly group: string = "Player";
+  public readonly version: number[] = [1, 0, 0];
   public activate: boolean = false;
 
   constructor() {

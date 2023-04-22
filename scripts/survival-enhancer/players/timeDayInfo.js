@@ -1,11 +1,11 @@
-import { world, system, } from "@minecraft/server";
-class ParrotCookieWarning {
+import { world, system } from "@minecraft/server";
+class TimeDayInfo {
     constructor() {
-        this.id = "parrot_cookie_warning";
-        this.name = "Parrot Cookie Warning";
-        this.desc = "Show notification to player when trying to give parrot a cookie";
-        this.beta = false;
-        this.group = "Entity";
+        this.id = "time_day_info";
+        this.name = "Time Day Info";
+        this.desc = "Show the time value";
+        this.beta = true;
+        this.group = "Player";
         this.version = [1, 0, 0];
         this.activate = false;
         system.runInterval(() => {
@@ -13,19 +13,23 @@ class ParrotCookieWarning {
                 return;
             for (const player of world.getPlayers()) {
                 const item = player.getComponent("inventory").container.getItem(player.selectedSlot);
-                if (item?.typeId !== "minecraft:cookie")
-                    return;
-                const entity = player.getEntitiesFromViewDirection({
-                    maxDistance: 5,
-                })[0];
-                if (entity?.typeId !== "minecraft:parrot")
-                    return;
-                let message = `[SE] ${this.name}\n§4[WARNING] §cDon't give cookie to parrot, you monster!`;
+                if (item?.typeId !== "minecraft:clock")
+                    continue;
+                let message = `[SE] ${this.name}`;
+                const worldTime = world.getTime();
+                const absoluteTime = world.getAbsoluteTime();
+                message += `\n§aWorld: ${this.numberToTime(worldTime)} §r| §cAbsolute: ${this.numberToTime(absoluteTime)}`;
                 player.onScreenDisplay.setActionBar(message);
             }
         });
         // Refreshing "activate" based on scoreboard
         this.refreshingData();
+    }
+    numberToTime(time) {
+        let hour = Math.floor(time / 1000) + 6;
+        if (time > 18000)
+            hour -= 18;
+        return `${hour <= 10 ? "0" + hour : hour}${Math.floor(time / 20) % 2 ? ":" : "."}00 ${hour >= 12 ? "PM" : "AM"}`;
     }
     refreshingData() {
         system.runInterval(() => {
@@ -42,4 +46,4 @@ class ParrotCookieWarning {
         });
     }
 }
-export default new ParrotCookieWarning();
+export default new TimeDayInfo();

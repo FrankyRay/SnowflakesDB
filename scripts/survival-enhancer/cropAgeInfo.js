@@ -60,7 +60,7 @@ class CropAgeInfo {
                 if (!(block?.typeId in this.plant))
                     continue;
                 let message = `[SE] ${this.name}`;
-                const perm = block.permutation.getProperty(this.plant[block.typeId].blockstate);
+                const perm = block.permutation.getState(this.plant[block.typeId].blockstate);
                 message += `\nType: ${block.typeId} | Age: ${perm < this.plant[block.typeId].harvestable}`;
             }
         });

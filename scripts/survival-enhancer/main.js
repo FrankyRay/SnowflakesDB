@@ -20,7 +20,7 @@ const features = [
     replantingCrops,
     /* cropAgeInfo */
 ];
-world.events.itemUse.subscribe((evd) => {
+world.afterEvents.itemUse.subscribe((evd) => {
     const player = evd.source;
     const item = evd.itemStack;
     if (!item.getLore().find((lore) => lore === "§r§e[Form] Survival Enhancer"))

@@ -6,11 +6,11 @@ import {
   ItemLockMode,
   ItemEnchantsComponent,
   Enchantment,
-  MinecraftEnchantmentTypes,
   Vector3,
   EntityInventoryComponent,
 } from "@minecraft/server";
-import customCommand from "./command";
+import { MinecraftEnchantmentTypes } from "@minecraft/vanilla-data";
+import customCommand from "../unused/command";
 
 interface ItemComponent {
   // Default Item Component [Java Syntax]
@@ -44,50 +44,50 @@ interface CommandResult {
     position?: Vector3;
     item: string;
     amount: number;
-    component: ItemComponent;
+    components: ItemComponent;
   };
 }
 
-enum EnchantmentId {
-  aqua_affinity = "AquaAffinity",
-  bane_of_arthropods = "BaneOfArthropods",
-  binding = "Binding",
-  blast_protection = "BlastProtection",
-  channeling = "Channeling",
-  depth_strider = "DepthStrider",
-  efficiency = "Efficiency",
-  feather_falling = "FeatherFalling",
-  fire_aspect = "FireAspect",
-  fire_protection = "FireProtection",
-  flame = "Flame",
-  fortune = "Fortune",
-  frost_walker = "FrostWalker",
-  impaling = "Impaling",
-  infinity = "Infinity",
-  knockback = "Knockback",
-  looting = "Looting",
-  loyalty = "Loyalty",
-  luck_of_the_sea = "LuckOfTheSea",
-  lure = "Lure",
-  mending = "Mending",
-  multishot = "Multishot",
-  piercing = "Piercing",
-  power = "Power",
-  projectile_protection = "ProjectileProtection",
-  protection = "Protection",
-  punch = "Punch",
-  quick_charge = "QuickCharge",
-  respiration = "Respiration",
-  riptide = "Riptide",
-  sharpness = "Sharpness",
-  silk_touch = "SilkTouch",
-  smite = "Smite",
-  soul_speed = "SoulSpeed",
-  swift_sneak = "SwiftSneak",
-  thorns = "Thorns",
-  unbreaking = "Unbreaking",
-  vanishing = "Vanishing",
-}
+const enchantmentId = {
+  aqua_affinity: "AquaAffinity",
+  bane_of_arthropods: "BaneOfArthropods",
+  binding: "Binding",
+  blast_protection: "BlastProtection",
+  channeling: "Channeling",
+  depth_strider: "DepthStrider",
+  efficiency: "Efficiency",
+  feather_falling: "FeatherFalling",
+  fire_aspect: "FireAspect",
+  fire_protection: "FireProtection",
+  flame: "Flame",
+  fortune: "Fortune",
+  frost_walker: "FrostWalker",
+  impaling: "Impaling",
+  infinity: "Infinity",
+  knockback: "Knockback",
+  looting: "Looting",
+  loyalty: "Loyalty",
+  luck_of_the_sea: "LuckOfTheSea",
+  lure: "Lure",
+  mending: "Mending",
+  multishot: "Multishot",
+  piercing: "Piercing",
+  power: "Power",
+  projectile_protection: "ProjectileProtection",
+  protection: "Protection",
+  punch: "Punch",
+  quick_charge: "QuickCharge",
+  respiration: "Respiration",
+  riptide: "Riptide",
+  sharpness: "Sharpness",
+  silk_touch: "SilkTouch",
+  smite: "Smite",
+  soul_speed: "SoulSpeed",
+  swift_sneak: "SwiftSneak",
+  thorns: "Thorns",
+  unbreaking: "Unbreaking",
+  vanishing: "Vanishing",
+};
 
 customCommand.addCommand({
   name: "item",
@@ -134,7 +134,7 @@ customCommand.addCommand({
       name: "item",
       description: "The item's identifier.",
       type: "item",
-      options: { stringify: false },
+      options: { stringify: true },
     },
     {
       name: "amount",
@@ -165,10 +165,10 @@ function itemCommand(player: Player, data: CommandResult) {
         createItem(
           data.arguments.item,
           data.arguments.amount,
-          data.arguments.component
+          data.arguments.components
         )
       );
-      console.log(itemLeft.typeId, itemLeft.amount);
+      console.log(itemLeft?.typeId, itemLeft?.amount);
       break;
 
     case "spawn":
@@ -176,7 +176,7 @@ function itemCommand(player: Player, data: CommandResult) {
         createItem(
           data.arguments.item,
           data.arguments.amount,
-          data.arguments.component
+          data.arguments.components
         ),
         data.arguments.position
       );
@@ -230,10 +230,7 @@ function createItem(
   ).enchantments;
   for (const enchantData of component?.Enchantment ?? []) {
     enchantList.addEnchantment(
-      new Enchantment(
-        MinecraftEnchantmentTypes[EnchantmentId[enchantData.id]],
-        enchantData.lvl ?? 1
-      )
+      new Enchantment(enchantData.id, enchantData.lvl ?? 1)
     );
   }
   (item.getComponent("enchantments") as ItemEnchantsComponent).enchantments =

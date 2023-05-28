@@ -24,7 +24,7 @@ class TimeDayInfo {
         const absoluteTime = world.getAbsoluteTime();
         message += `\n§aWorld: ${this.numberToTime(
           worldTime
-        )} §r| §cAbsolute: ${this.numberToTime(absoluteTime)}`;
+        )} §r| §cAbsolute: ${absoluteTime}`;
 
         player.onScreenDisplay.setActionBar(message);
       }
@@ -36,11 +36,15 @@ class TimeDayInfo {
 
   private numberToTime(time: number): string {
     let hour = Math.floor(time / 1000) + 6;
-    if (time > 18000) hour -= 18;
+    if (hour >= 24) hour -= 24;
+    let minute = Math.floor((time - (hour - 6) * 1000) / 10) % 100;
 
-    return `${hour <= 10 ? "0" + hour : hour}${
-      Math.floor(time / 20) % 2 ? ":" : "."
-    }00 ${hour >= 12 ? "PM" : "AM"}`;
+    let midday = !!(Math.floor(hour / 12) % 2) ? "PM" : "AM";
+    let hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${("" + hour12).padStart(2, "0")}:${("" + minute).padStart(
+      2,
+      "0"
+    )} ${midday}`;
   }
 
   private refreshingData() {

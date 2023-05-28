@@ -1,46 +1,45 @@
-import { ItemStack, ItemLockMode, Enchantment, MinecraftEnchantmentTypes, } from "@minecraft/server";
-import customCommand from "./command";
-var EnchantmentId;
-(function (EnchantmentId) {
-    EnchantmentId["aqua_affinity"] = "AquaAffinity";
-    EnchantmentId["bane_of_arthropods"] = "BaneOfArthropods";
-    EnchantmentId["binding"] = "Binding";
-    EnchantmentId["blast_protection"] = "BlastProtection";
-    EnchantmentId["channeling"] = "Channeling";
-    EnchantmentId["depth_strider"] = "DepthStrider";
-    EnchantmentId["efficiency"] = "Efficiency";
-    EnchantmentId["feather_falling"] = "FeatherFalling";
-    EnchantmentId["fire_aspect"] = "FireAspect";
-    EnchantmentId["fire_protection"] = "FireProtection";
-    EnchantmentId["flame"] = "Flame";
-    EnchantmentId["fortune"] = "Fortune";
-    EnchantmentId["frost_walker"] = "FrostWalker";
-    EnchantmentId["impaling"] = "Impaling";
-    EnchantmentId["infinity"] = "Infinity";
-    EnchantmentId["knockback"] = "Knockback";
-    EnchantmentId["looting"] = "Looting";
-    EnchantmentId["loyalty"] = "Loyalty";
-    EnchantmentId["luck_of_the_sea"] = "LuckOfTheSea";
-    EnchantmentId["lure"] = "Lure";
-    EnchantmentId["mending"] = "Mending";
-    EnchantmentId["multishot"] = "Multishot";
-    EnchantmentId["piercing"] = "Piercing";
-    EnchantmentId["power"] = "Power";
-    EnchantmentId["projectile_protection"] = "ProjectileProtection";
-    EnchantmentId["protection"] = "Protection";
-    EnchantmentId["punch"] = "Punch";
-    EnchantmentId["quick_charge"] = "QuickCharge";
-    EnchantmentId["respiration"] = "Respiration";
-    EnchantmentId["riptide"] = "Riptide";
-    EnchantmentId["sharpness"] = "Sharpness";
-    EnchantmentId["silk_touch"] = "SilkTouch";
-    EnchantmentId["smite"] = "Smite";
-    EnchantmentId["soul_speed"] = "SoulSpeed";
-    EnchantmentId["swift_sneak"] = "SwiftSneak";
-    EnchantmentId["thorns"] = "Thorns";
-    EnchantmentId["unbreaking"] = "Unbreaking";
-    EnchantmentId["vanishing"] = "Vanishing";
-})(EnchantmentId || (EnchantmentId = {}));
+import { ItemStack, ItemLockMode, Enchantment, } from "@minecraft/server";
+import customCommand from "../unused/command";
+const enchantmentId = {
+    aqua_affinity: "AquaAffinity",
+    bane_of_arthropods: "BaneOfArthropods",
+    binding: "Binding",
+    blast_protection: "BlastProtection",
+    channeling: "Channeling",
+    depth_strider: "DepthStrider",
+    efficiency: "Efficiency",
+    feather_falling: "FeatherFalling",
+    fire_aspect: "FireAspect",
+    fire_protection: "FireProtection",
+    flame: "Flame",
+    fortune: "Fortune",
+    frost_walker: "FrostWalker",
+    impaling: "Impaling",
+    infinity: "Infinity",
+    knockback: "Knockback",
+    looting: "Looting",
+    loyalty: "Loyalty",
+    luck_of_the_sea: "LuckOfTheSea",
+    lure: "Lure",
+    mending: "Mending",
+    multishot: "Multishot",
+    piercing: "Piercing",
+    power: "Power",
+    projectile_protection: "ProjectileProtection",
+    protection: "Protection",
+    punch: "Punch",
+    quick_charge: "QuickCharge",
+    respiration: "Respiration",
+    riptide: "Riptide",
+    sharpness: "Sharpness",
+    silk_touch: "SilkTouch",
+    smite: "Smite",
+    soul_speed: "SoulSpeed",
+    swift_sneak: "SwiftSneak",
+    thorns: "Thorns",
+    unbreaking: "Unbreaking",
+    vanishing: "Vanishing",
+};
 customCommand.addCommand({
     name: "item",
     description: "Manipulate or copy items in the inventories of blocks (chest, furnaces, etc.) or entities (players or mobs).",
@@ -85,7 +84,7 @@ customCommand.addCommand({
             name: "item",
             description: "The item's identifier.",
             type: "item",
-            options: { stringify: false },
+            options: { stringify: true },
         },
         {
             name: "amount",
@@ -109,11 +108,11 @@ customCommand.addCommand({
 function itemCommand(player, data) {
     switch (data.arguments.selection) {
         case "give":
-            const itemLeft = player.getComponent("inventory").container.addItem(createItem(data.arguments.item, data.arguments.amount, data.arguments.component));
-            console.log(itemLeft.typeId, itemLeft.amount);
+            const itemLeft = player.getComponent("inventory").container.addItem(createItem(data.arguments.item, data.arguments.amount, data.arguments.components));
+            console.log(itemLeft?.typeId, itemLeft?.amount);
             break;
         case "spawn":
-            player.dimension.spawnItem(createItem(data.arguments.item, data.arguments.amount, data.arguments.component), data.arguments.position);
+            player.dimension.spawnItem(createItem(data.arguments.item, data.arguments.amount, data.arguments.components), data.arguments.position);
             break;
     }
 }
@@ -148,7 +147,7 @@ function createItem(itemId, amount, component) {
     item.setLore(component?.Display?.Lore ?? []);
     const enchantList = item.getComponent("enchantments").enchantments;
     for (const enchantData of component?.Enchantment ?? []) {
-        enchantList.addEnchantment(new Enchantment(MinecraftEnchantmentTypes[EnchantmentId[enchantData.id]], enchantData.lvl ?? 1));
+        enchantList.addEnchantment(new Enchantment(enchantData.id, enchantData.lvl ?? 1));
     }
     item.getComponent("enchantments").enchantments =
         enchantList;

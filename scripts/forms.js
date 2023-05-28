@@ -1,4 +1,4 @@
-import { world, MinecraftEffectTypes, ItemStack, MinecraftItemTypes, } from "@minecraft/server";
+import { world, system, ItemStack, MinecraftItemTypes, } from "@minecraft/server";
 import { ActionFormData, MessageFormData } from "@minecraft/server-ui";
 import deepCopy from "lib/deepCopy";
 import "survival-enhancer/main";
@@ -12,6 +12,11 @@ const options = [
         name: "Survival Enhancer Book",
         icon: "",
         func: survivalEnhancerBook,
+    },
+    {
+        name: "Gametest Playground Book",
+        icon: "",
+        func: gametestPlaygroundBook,
     },
     {
         name: "Block Component [DeepCopy/Test]",
@@ -28,8 +33,18 @@ const options = [
         icon: "",
         func: testing,
     },
+    {
+        name: "Console",
+        icon: "",
+        func: consoleFunc,
+    },
+    {
+        name: "ActionBar Test",
+        icon: "",
+        func: actionbarTest,
+    },
 ];
-world.events.itemUse.subscribe((event) => {
+world.afterEvents.itemUse.subscribe((event) => {
     if (event.itemStack.typeId !== "minecraft:book" ||
         event.itemStack.getLore().length !== 0)
         return;
@@ -83,7 +98,16 @@ function blockComponent(player) {
         .show(player);
 }
 function testing(player) {
-    player.addEffect(MinecraftEffectTypes.speed, 0, 255, true);
+    system.runTimeout(() => {
+        const item = player.getComponent("inventory").container.getItem(player.selectedSlot);
+        const enc = item.getComponent("enchantments")
+            .enchantments;
+        let message = `Enchantment ${item.typeId} [Slot: ${enc.slot}]`;
+        for (const e of enc) {
+            message += `\n${e.type.id} | ${e.level}/${e.type.maxLevel}`;
+        }
+        console.log(message);
+    }, 100);
 }
 function survivalEnhancerBook(player) {
     const inv = player.getComponent("inventory");
@@ -91,4 +115,21 @@ function survivalEnhancerBook(player) {
     item.nameTag = "§rSurvival Enhancer Options";
     item.setLore(["§r§e[Form] Survival Enhancer"]);
     inv.container.addItem(item);
+}
+function gametestPlaygroundBook(player) {
+    const inv = player.getComponent("inventory");
+    const item = new ItemStack(MinecraftItemTypes.book, 1);
+    item.setLore(["§r§e[Form] Gametest Playground"]);
+    inv.container.addItem(item);
+}
+function consoleFunc(player) {
+    console.log("[LOG] console.log()");
+    console.warn("[WARN] console.warn()");
+    console.error("[ERROR] console.error()");
+}
+function actionbarTest(player) {
+    if (player.hasTag("snowflake:actionbar_test"))
+        player.removeTag("snowflake:actionbar_test");
+    else
+        player.addTag("snowflake:actionbar_test");
 }

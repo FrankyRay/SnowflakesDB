@@ -205,8 +205,7 @@ _CustomCommand_commandOptions = new WeakMap(), _CustomCommand_commandList = new 
         else if (commandData.arguments[argIndex].type === "option") {
             const [value, subArgument] = __classPrivateFieldGet(this, _CustomCommand_instances, "m", _CustomCommand_optionArgumentType).call(this, argValue, commandData.arguments[argIndex], player);
             commandData.arguments.splice(argIndex, 0, ...subArgument);
-            commandArgs.arguments[commandData.arguments[argIndex].name] = value;
-            argIndex++;
+            commandArgs.arguments[commandData.arguments[argIndex++].name] = value;
         }
         else {
             commandArgs.arguments[commandData.arguments[argIndex].name] =
@@ -654,7 +653,10 @@ _CustomCommand_commandOptions = new WeakMap(), _CustomCommand_commandList = new 
     else
         return;
     try {
-        __classPrivateFieldGet(this, _CustomCommand_commandList, "f")[data.command].callback(player, data);
+        const commandCallback = __classPrivateFieldGet(this, _CustomCommand_commandList, "f")[data.command].callback;
+        system.runTimeout(() => {
+            commandCallback(player, data);
+        }, 1);
         console.warn(`Successfully run '/${data.command}' with data: \n${JSON.stringify(data, null, 2)}'`);
     }
     catch (error) {

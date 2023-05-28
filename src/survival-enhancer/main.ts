@@ -37,7 +37,7 @@ interface SEComponentClass {
   activate: boolean;
 }
 
-world.events.itemUse.subscribe((evd) => {
+world.afterEvents.itemUse.subscribe((evd) => {
   const player = evd.source as Player;
   const item = evd.itemStack;
   if (!item.getLore().find((lore) => lore === "§r§e[Form] Survival Enhancer"))
@@ -65,7 +65,7 @@ function survivalEnhancer(player: Player): void {
     if (result.canceled) return;
 
     features.forEach((data: SEComponentClass, i: number) => {
-      const value: boolean = result.formValues[i];
+      const value = result.formValues[i];
 
       player.runCommand(
         `scoreboard players set ${data.id} survival_plus ${Number(value)}`

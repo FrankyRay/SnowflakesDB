@@ -18,7 +18,7 @@ class TimeDayInfo {
                 let message = `[SE] ${this.name}`;
                 const worldTime = world.getTime();
                 const absoluteTime = world.getAbsoluteTime();
-                message += `\n§aWorld: ${this.numberToTime(worldTime)} §r| §cAbsolute: ${this.numberToTime(absoluteTime)}`;
+                message += `\n§aWorld: ${this.numberToTime(worldTime)} §r| §cAbsolute: ${absoluteTime}`;
                 player.onScreenDisplay.setActionBar(message);
             }
         });
@@ -27,9 +27,12 @@ class TimeDayInfo {
     }
     numberToTime(time) {
         let hour = Math.floor(time / 1000) + 6;
-        if (time > 18000)
-            hour -= 18;
-        return `${hour <= 10 ? "0" + hour : hour}${Math.floor(time / 20) % 2 ? ":" : "."}00 ${hour >= 12 ? "PM" : "AM"}`;
+        if (hour >= 24)
+            hour -= 24;
+        let minute = Math.floor((time - (hour - 6) * 1000) / 10) % 100;
+        let midday = !!(Math.floor(hour / 12) % 2) ? "PM" : "AM";
+        let hour12 = hour % 12 === 0 ? 12 : hour % 12;
+        return `${("" + hour12).padStart(2, "0")}:${("" + minute).padStart(2, "0")} ${midday}`;
     }
     refreshingData() {
         system.runInterval(() => {

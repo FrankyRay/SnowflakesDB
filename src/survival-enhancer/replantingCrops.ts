@@ -37,7 +37,7 @@ class ReplantingCrops {
   };
 
   constructor() {
-    world.events.blockBreak.subscribe((evd) => {
+    world.afterEvents.blockBreak.subscribe((evd) => {
       if (!this.activate) return;
       const { block, brokenBlockPermutation, player } = evd;
       if (!(brokenBlockPermutation.type.id in this.plant)) return;

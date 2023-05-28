@@ -21,7 +21,7 @@ class ReplantingCrops {
             "minecraft:torchflower": "minecraft:torchflower_seeds",
             "minecraft:pitcher_crop": "minecraft:pitcher_pod",
         };
-        world.events.blockBreak.subscribe((evd) => {
+        world.afterEvents.blockBreak.subscribe((evd) => {
             if (!this.activate)
                 return;
             const { block, brokenBlockPermutation, player } = evd;
